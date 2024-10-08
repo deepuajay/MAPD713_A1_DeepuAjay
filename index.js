@@ -1,7 +1,7 @@
 import express from "express";
 const app = express();
 
-app.use(express.json()); //interceptor for post requests
+app.use(express.json());
 
 const port = 3000;
 const postEndpoint = "product";
@@ -9,6 +9,13 @@ const getEndpoint = "products";
 
 let getRequestCount = 0;
 let postRequestCount = 0;
+let deleteRequestCount = 0;
+
+const printRequestCount = function () {
+  console.log(
+    `Processed Request Count--> Get: ${getRequestCount}, Post: ${postRequestCount}, Delete: ${deleteRequestCount}`
+  );
+};
 
 let datastore = {
   products: [],
@@ -17,9 +24,7 @@ let datastore = {
 app.get(`/${getEndpoint}`, (req, res) => {
   getRequestCount++;
   res.json(datastore.products);
-  console.log(
-    `Processed Request Count--> Get: ${getRequestCount}, Post: ${postRequestCount}`
-  );
+  printRequestCount();
 });
 
 app.post(`/${postEndpoint}`, (req, res) => {
@@ -36,11 +41,14 @@ app.post(`/${postEndpoint}`, (req, res) => {
   }
   datastore.products.push(product);
   res.status(201).json(product);
+  printRequestCount();
 });
 
 app.delete(`/${getEndpoint}`, (req, res) => {
+  deleteRequestCount++;
   datastore.products = [];
   res.status(200).json({ message: "All products deleted" });
+  printRequestCount();
 });
 
 app.listen(port, () => {
