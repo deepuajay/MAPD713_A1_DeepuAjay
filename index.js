@@ -7,15 +7,23 @@ const port = 3000;
 const postEndpoint = "product";
 const getEndpoint = "products";
 
+let getRequestCount = 0;
+let postRequestCount = 0;
+
 let datastore = {
   products: [],
 };
 
 app.get(`/${getEndpoint}`, (req, res) => {
+  getRequestCount++;
   res.json(datastore.products);
+  console.log(
+    `Processed Request Count--> Get: ${getRequestCount}, Post: ${postRequestCount}`
+  );
 });
 
 app.post(`/${postEndpoint}`, (req, res) => {
+  postRequestCount++;
   const product = req.body;
   if (
     !product ||
